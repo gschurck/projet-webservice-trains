@@ -19,29 +19,23 @@ class TrainBase(SQLModel):
     departure_station: str
     arrival_station: str
     departure_time: datetime = Field(default=None, sa_column=Column(DateTime))
-    arrival_time: datetime = Field(default=None, sa_column=Column(DateTime))
 
 
 class Train(TrainBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    train_class_seats: List["TrainClassSeats"] = Relationship(back_populates="train",
-                                                              sa_relationship_kwargs={"lazy": "subquery"})
+    train_classes: List["TrainClass"] = Relationship(back_populates="train",
+                                                     sa_relationship_kwargs={"lazy": "subquery"})
 
 
 class TrainRead(TrainBase):
     id: int
 
 
-class TrainWithClassSeats(TrainRead):
-    train_class_seats: List["TrainClassSeatsRead"]
-
-
 class TrainUpdate(SQLModel):
     departure_station: Optional[str] = None
     arrival_station: Optional[str] = None
-    outbound_time: Optional[datetime] = None
-    return_time: Optional[datetime] = None
+    departure_time: Optional[datetime] = None
 
 
 # TrainClassSeats
@@ -53,17 +47,29 @@ class SeatClass(str, Enum):
     STANDARD = "standard"
 
 
-class TrainClassSeatsBase(SQLModel):
+class TrainClassBase(SQLModel):
     seat_class: SeatClass
-    available_seats_count: int
+    available_seats_count: int = Field(ge=0)
     train_id: int = Field(default=None, foreign_key="train.id")
 
 
-class TrainClassSeats(TrainClassSeatsBase, table=True):
+class TrainClass(TrainClassBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    train: Train = Relationship(back_populates="train_class_seats")
+    train: Train = Relationship(back_populates="train_classes")
 
 
-class TrainClassSeatsRead(TrainClassSeatsBase):
+Train.update_forward_refs(TrainClass=TrainClass)
+
+
+class TrainClassRead(TrainClassBase):
     id: int
+
+
+class TrainClassUpdate(SQLModel):
+    seat_class: Optional[SeatClass] = None
+    available_seats_count: Optional[int] = None
+
+
+class TrainWithClasses(TrainRead):
+    train_classes: List[TrainClassRead]

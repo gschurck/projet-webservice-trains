@@ -5,21 +5,20 @@ from fastapi_filter import FilterDepends, with_prefix
 from fastapi_filter.contrib.sqlalchemy import Filter
 from sqlmodel import Session, select
 
-from db import Train, init_db, TrainClassSeats, get_session
-from models import TrainRead, TrainWithClassSeats, TrainUpdate
-
-engine = init_db()
+from db import Train, TrainClass, get_session, engine
+from models import TrainRead, TrainWithClasses, TrainUpdate
+from routes.trains_subroutes import train_class_routes
 
 router = APIRouter(
-    prefix="/trains",
+    prefix="/trains", tags=["trains"],
 )
 
 
-class TrainClassSeatsFilter(Filter):
+class TrainClassFilter(Filter):
     seat_class__in: Optional[List[str]]
 
     class Constants(Filter.Constants):
-        model = TrainClassSeats
+        model = TrainClass
 
 
 class TrainFilter(Filter):
@@ -27,7 +26,9 @@ class TrainFilter(Filter):
     departure_station__ilike: Optional[str]
     departure_station__like: Optional[str]
     search: Optional[str]
-    train_class_seats: Optional[TrainClassSeatsFilter] = FilterDepends(with_prefix("train", TrainClassSeatsFilter))
+    train_class_seats: Optional[TrainClassFilter] = FilterDepends(with_prefix("train", TrainClassFilter))
+
+    # available_seats_count__gt: Optional[int]
 
     class Constants(Filter.Constants):
         model = Train
@@ -41,7 +42,7 @@ async def get_trains(train_filter: TrainFilter = FilterDepends(TrainFilter), db:
     return db.exec(query).all()
 
 
-@router.get("/{train_id}", response_model=TrainWithClassSeats)
+@router.get("/{train_id}", response_model=TrainWithClasses)
 async def get_train(train_id: int, db: Session = Depends(get_session)):
     train = db.get(Train, train_id)
     if not train:
@@ -62,3 +63,6 @@ def update_hero(train_id: int, train: TrainUpdate):
         session.commit()
         session.refresh(db_train)
         return db_train
+
+
+router.include_router(train_class_routes.router, tags=["trains"])

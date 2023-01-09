@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
+from db import init_db
 from routes import trains_routes
+
+init_db()
 
 app = FastAPI()
 
