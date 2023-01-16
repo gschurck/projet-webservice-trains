@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   api:
-    build: .
+    build: api
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     volumes:
       - .:/app
@@ -12,13 +12,22 @@ services:
     depends_on:
       - db
     ports:
-      - 8000:8000
-
-  db:
+      - "8000:8000"
+  api-db:
     image: postgres:14
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=database
     ports:
-      - 5433:5432
+      - "5433:5432"
+  soap-server:
+    build: soap/soap-server
+    ports:
+      - "8050:8050"
+  soap-client:
+    build: soap/client
+    depends_on:
+      - soap-server
+    ports:
+      - "8051:8051"

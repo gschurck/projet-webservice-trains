@@ -22,10 +22,12 @@ def settransactiondetails(sessionId, msisdn, amount, language):
 
 # register the user function
 dispatcher.register_function('InitiateTransfer', settransactiondetails,
-                             returns={'sessionId': str, 'responseCode': int},
+                             returns={'sessionId': str, 'responseCode': int, "list": "ns0:InitiateTransferResponse"},
                              args={'sessionId': str, 'msisdn': str, 'amount': str, 'language': str})
+print(dispatcher.wsdl())
+# make the soap server return list of integers
 
-logging.info("Starting server...")
+logging.info("Starting soap-server...")
 httpd = HTTPServer(("", 8050), SOAPHandler)
 httpd.dispatcher = dispatcher
 httpd.serve_forever()
