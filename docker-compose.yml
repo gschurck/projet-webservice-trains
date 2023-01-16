@@ -22,7 +22,7 @@ services:
     ports:
       - "5433:5432"
   soap-server:
-    build: soap/soap-server
+    build: soap/pysimplesoap/soap-server
     ports:
       - "8050:8050"
   soap-client:
