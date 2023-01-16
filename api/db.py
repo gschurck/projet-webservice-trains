@@ -26,7 +26,7 @@ def delete_all(model: Type[SQLModel]):
         session.commit()
 
 
-engine = create_engine("postgresql://postgres:password@db:5432/database")
+engine = create_engine("postgresql://postgres:password@api-db:5432/database")
 
 
 def init_db():

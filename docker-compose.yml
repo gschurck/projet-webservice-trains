@@ -3,14 +3,13 @@ version: '3.7'
 services:
   api:
     build: api
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
     volumes:
-      - .:/app
+      - ./api:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/database
       - PYTHONPATH=/app
     depends_on:
-      - db
+      - api-db
     ports:
       - "8000:8000"
   api-db:
@@ -21,13 +20,13 @@ services:
       - POSTGRES_DB=database
     ports:
       - "5433:5432"
-  soap-server:
-    build: soap/pysimplesoap/soap-server
-    ports:
-      - "8050:8050"
-  soap-client:
-    build: soap/client
-    depends_on:
-      - soap-server
-    ports:
-      - "8051:8051"
+#  soap-server:
+#    build: soap/pysimplesoap/soap-server
+#    ports:
+#      - "8050:8050"
+#  soap-client:
+#    build: soap/client
+#    depends_on:
+#      - soap-server
+#    ports:
+#      - "8051:8051"
