@@ -8,11 +8,6 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY ./ /app
 
-WORKDIR /test
 RUN pc init
-WORKDIR /
-RUN rm -rf /test
-
-WORKDIR /app
 
 CMD ["pc", "run"]
