@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM nikolaik/python-nodejs:python3.10-nodejs18
 
 WORKDIR /app
 
@@ -8,4 +8,11 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY ./ /app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+WORKDIR /test
+RUN pc init
+WORKDIR /
+RUN rm -rf /test
+
+WORKDIR /app
+
+CMD ["pc", "run"]

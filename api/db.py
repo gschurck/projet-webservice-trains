@@ -16,6 +16,16 @@ train_1 = Train(
         TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30),
     ]
 )
+train_2 = Train(
+    departure_station="Paris",
+    arrival_station="Nantes",
+    departure_time=datetime(2021, 1, 1, 10, 0, 0),
+    train_classes=[
+        TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10),
+        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20),
+        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30),
+    ]
+)
 
 
 def delete_all(model: Type[SQLModel]):
@@ -35,6 +45,7 @@ def init_db():
 
     with Session() as session:
         session.add(train_1)
+        session.add(train_2)
         session.commit()
         print("Done")
         session.close()

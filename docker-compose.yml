@@ -11,7 +11,7 @@ services:
     depends_on:
       - api-db
     ports:
-      - "8000:8000"
+      - "8001:8001"
   api-db:
     image: postgres:14
     environment:
@@ -22,16 +22,23 @@ services:
       - "5433:5432"
   soap-server:
     build: soap/spyne-soap
+    volumes:
+      - ./soap/spyne-soap:/app
     environment:
-      - API_URL=http://api:8000
+      - API_URL=http://api:8001
       - PYTHONPATH=/app
     depends_on:
       - api
     ports:
       - "8050:8050"
-#  soap-client:
-#    build: soap/client
-#    depends_on:
-#      - soap-server
-#    ports:
-#      - "8051:8051"
+  soap-client:
+    build: soap/client
+    volumes:
+      - ./soap/client:/app
+    environment:
+      - WSDL_URL=http://soap-server:8050/?wsdl
+    depends_on:
+      - soap-server
+    ports:
+      - "3000:3000"
+      - "8000:8000"

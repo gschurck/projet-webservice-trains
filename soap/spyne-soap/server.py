@@ -13,6 +13,8 @@ from spyne.server.wsgi import WsgiApplication
 
 from soap_models import CustomModel, Train
 
+API_URL = os.getenv("API_URL")
+
 
 class HelloWorldService(ServiceBase):
     @rpc(Unicode, Integer, DateTime, _returns=Iterable(CustomModel))
@@ -34,21 +36,24 @@ class SearchTrainsService(ServiceBase):
         # split seat_classes to string and join with comma
         seat_classes = ','.join(seat_classes)
         logging.info(seat_classes)
-        res = requests.get(os.getenv('API_URL') + '/trains', params={
-            'departure_station': departure_station,
-            'arrival_station': arrival_station,
-            'train__seat_class__in': seat_classes,
+        res = requests.get(API_URL + '/trains', params={
+            'departure_station': departure_station if departure_station else None,
+            'arrival_station': arrival_station if arrival_station else None,
+            'train__seat_class__in': seat_classes if seat_classes else None,
         })
         logging.info(type(res))
         logging.info(json.dumps(res.json(), indent=4))
         trains = json.loads(res.text)
         logging.info(type(trains))
+        for train in trains:
+            res = requests.get(API_URL + '/trains/' + str(train['id']) + '/classes')
+            train['classes'] = json.loads(res.text)
+        logging.info(json.dumps(trains, indent=4))
         return trains
-        # return ['train 1', 'train 2']
 
 
 application = Application([HelloWorldService, SearchTrainsService],
-                          tns='spyne.examples.hello',
+                          tns='soap.trains',
                           in_protocol=Soap11(validator='lxml'),
                           out_protocol=Soap11()
                           )

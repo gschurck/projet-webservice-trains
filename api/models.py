@@ -66,6 +66,12 @@ class TrainClassRead(TrainClassBase):
     id: int
 
 
+class FullTrainClassRead(TrainClassBase):
+    id: int
+    seat_class: SeatClass
+    available_seats_count: int
+
+
 class TrainClassUpdate(SQLModel):
     seat_class: Optional[SeatClass] = None
     available_seats_count: Optional[int] = None
