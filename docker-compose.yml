@@ -35,6 +35,7 @@ services:
     build: soap/client
     volumes:
       - ./soap/client:/app
+      - /app/.web
     environment:
       - WSDL_URL=http://soap-server:8050/?wsdl
     depends_on:
