@@ -20,13 +20,12 @@ class State(pc.State):
     arrival_station = ""
     departure_date = ""
     classes: List[TrainClass] = []
-    train_class = ""
+    selected_train_class = ""
 
     def search_trains(self):
         """Get the image from the prompt."""
         client = Client(WSDL_URL)
         string_list = ['first', 'standard']
-        self.trains = string_list
         emptyArrayPlaceholder = client.get_type('ns0:stringArray')
         options = emptyArrayPlaceholder()
         for el in string_list:
@@ -37,6 +36,9 @@ class State(pc.State):
             options,
             "2022-01-01T12:00:00"
         )
+        if not response:
+            self.trains = []
+            return
         print(type(response))
         print(type(response[0]))
         print(response)
@@ -47,8 +49,7 @@ class State(pc.State):
         #                   train['id'], train['classes'])
         res = helpers.serialize_object(response)
         print(res)
-        self.trains = parse_obj_as(List[Train],
-                                   res)  # [Train.parse_obj(dict(train)) for train in helpers.serialize_object(response)]
+        self.trains = parse_obj_as(List[Train], res)
         print(self.trains)
 
 
@@ -117,7 +118,7 @@ def index():
             pc.select(
                 ["first", "standard", "business"],
                 placeholder="Select an class",
-                # on_change=SelectState.set_option,
+                on_change=State.set_selected_train_class,
             ),
             pc.checkbox(
                 "Round trip",
