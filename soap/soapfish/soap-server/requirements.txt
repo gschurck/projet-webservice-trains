@@ -1,1 +1,0 @@
-PySimpleSOAP==1.16.2
