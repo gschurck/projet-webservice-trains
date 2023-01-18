@@ -26,6 +26,7 @@ class State(pc.State):
     first: bool = False
     standard: bool = False
     business: bool = False
+    quantity: int = 1
 
     def search_trains(self):
         """Get the image from the prompt."""
@@ -47,7 +48,6 @@ class State(pc.State):
             options,
             datetime.strptime(self.departure_date, "%Y-%m-%d").date() if self.departure_date else None,
             datetime.strptime(self.departure_time, "%H:%M:%S").time() if self.departure_time else None,
-            # "2022-01-01T12:00:00"
         )
         if not response:
             self.trains = []
@@ -62,11 +62,11 @@ class State(pc.State):
 
     def select_train_seat_class(self, selected_train: dict, selected_train_seat_class: dict):
         print("selected: " + str(selected_train['id']) + " " + str(selected_train_seat_class['id']))
-        quantity = 1
         self.selected_train = selected_train
         self.selected_train_seat_class = selected_train_seat_class
         client = Client(WSDL_URL)
-        response = client.service.book_tickets(1, selected_train_seat_class['available_seats_count'] - quantity)
+        response = client.service.book_tickets(1,
+                                               selected_train_seat_class['available_seats_count'] - int(self.quantity))
         print(response)
         self.trains = []
         return pc.redirect("/book-tickets")
@@ -93,28 +93,6 @@ def render_train(train: Train):
     )
 
 
-# def render_classes(train_id: int):
-#     return pc.center(
-#         pc.vstack(
-#             pc.heading("Select classes", font_size="1.5em"),
-#             pc.button(
-#                 "Back",
-#                 on_click=[State.set_selected_train],
-#                 width="100%",
-#             ),
-#             pc.divider(),
-#             pc.foreach(State.trains[train_id]["classes"], lambda item: render_class(item)),
-#             bg="white",
-#             padding="2em",
-#             shadow="lg",
-#             border_radius="lg",
-#         ),
-#         width="100%",
-#         height="100vh",
-#         bg="radial-gradient(circle at 22% 11%,rgba(62, 180, 137,.20),hsla(0,0%,100%,0) 19%)",
-#     )
-
-
 def index():
     return pc.center(
         pc.vstack(
@@ -127,7 +105,17 @@ def index():
                 "Round trip",
                 on_change=State.set_is_round_trip,
             ),
-            pc.text("Filter by classes"),
+            pc.text("Filter seats"),
+            pc.hstack(
+                pc.center(
+                    pc.text("Quantity"),
+                    pc.number_input(
+                        on_change=State.set_quantity,
+                        width="50%",
+                        margin_left="10%",
+                    ),
+                )
+            ),
             pc.hstack(
                 pc.checkbox("first", on_change=State.set_first),
                 pc.checkbox("standard", on_change=State.set_standard),
