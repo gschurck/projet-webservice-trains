@@ -6,7 +6,7 @@ import requests
 
 logging.basicConfig(level=logging.INFO)
 from spyne import Application, rpc, ServiceBase, \
-    Integer, Unicode, DateTime
+    Integer, Unicode, DateTime, Date, Time
 from spyne import Iterable
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
@@ -27,8 +27,8 @@ class HelloWorldService(ServiceBase):
 
 
 class SearchTrainsService(ServiceBase):
-    @rpc(Unicode, Unicode, Iterable(Unicode), DateTime, _returns=Iterable(Train))
-    def search_trains(ctx, departure_station, arrival_station, seat_classes, date):
+    @rpc(Unicode, Unicode, Iterable(Unicode), Date, Time, _returns=Iterable(Train))
+    def search_trains(ctx, departure_station, arrival_station, seat_classes, date, time):
         # convert generator to list
         seat_classes = list(seat_classes)
         logging.info(str(seat_classes))
@@ -37,8 +37,10 @@ class SearchTrainsService(ServiceBase):
         seat_classes = ','.join(seat_classes)
         logging.info(seat_classes)
         res = requests.get(API_URL + '/trains', params={
-            'departure_station': departure_station if departure_station else None,
-            'arrival_station': arrival_station if arrival_station else None,
+            'departure_station__ilike': departure_station if departure_station else None,
+            'arrival_station__ilike': arrival_station if arrival_station else None,
+            'departure_date__ilike': date if date else None,
+            'departure_time__ilike': time if time else None,
             'train__seat_class__in': seat_classes if seat_classes else None,
         })
         logging.info(type(res))

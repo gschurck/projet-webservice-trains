@@ -1,0 +1,609 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/trains": {
+      "get": {
+        "tags": [
+          "trains"
+        ],
+        "summary": "Get Trains",
+        "operationId": "get_trains_trains_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Departure Station  Ilike",
+              "type": "string"
+            },
+            "name": "departure_station__ilike",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Arrival Station  Ilike",
+              "type": "string"
+            },
+            "name": "arrival_station__ilike",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Departure Date  Ilike",
+              "type": "string"
+            },
+            "name": "departure_date__ilike",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Departure Time  Ilike",
+              "type": "string"
+            },
+            "name": "departure_time__ilike",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Search",
+              "type": "string"
+            },
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Train  Seat Class  In",
+              "type": "string"
+            },
+            "name": "train__seat_class__in",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Trains Trains Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TrainRead"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains/{train_id}": {
+      "get": {
+        "tags": [
+          "trains"
+        ],
+        "summary": "Get Train",
+        "operationId": "get_train_trains__train_id__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Train Id",
+              "type": "integer"
+            },
+            "name": "train_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainWithClasses"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "trains"
+        ],
+        "summary": "Update Hero",
+        "operationId": "update_hero_trains__train_id__patch",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Train Id",
+              "type": "integer"
+            },
+            "name": "train_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains/{train_id}/classes": {
+      "get": {
+        "tags": [
+          "trains"
+        ],
+        "summary": "Get Train Classes",
+        "operationId": "get_train_classes_trains__train_id__classes_get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Train Id",
+              "type": "integer"
+            },
+            "name": "train_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response Get Train Classes Trains  Train Id  Classes Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FullTrainClassRead"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trains/class/{train_class_id}": {
+      "get": {
+        "tags": [
+          "trains",
+          "trains"
+        ],
+        "summary": "Get Train Class",
+        "operationId": "get_train_class_trains_class__train_class_id__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Train Class Id",
+              "type": "integer"
+            },
+            "name": "train_class_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainClassRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "trains",
+          "trains"
+        ],
+        "summary": "Update Train Class",
+        "operationId": "update_train_class_trains_class__train_class_id__patch",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Train Class Id",
+              "type": "integer"
+            },
+            "name": "train_class_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainClassUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainClassRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hello/{name}": {
+      "get": {
+        "summary": "Say Hello",
+        "operationId": "say_hello_hello__name__get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            },
+            "name": "name",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FullTrainClassRead": {
+        "title": "FullTrainClassRead",
+        "required": [
+          "seat_class",
+          "available_seats_count",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "seat_class": {
+            "$ref": "#/components/schemas/SeatClass"
+          },
+          "available_seats_count": {
+            "title": "Available Seats Count",
+            "type": "integer"
+          },
+          "train_id": {
+            "title": "Train Id",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        }
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "SeatClass": {
+        "title": "SeatClass",
+        "enum": [
+          "first",
+          "business",
+          "standard"
+        ],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "TrainClassRead": {
+        "title": "TrainClassRead",
+        "required": [
+          "seat_class",
+          "available_seats_count",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "seat_class": {
+            "$ref": "#/components/schemas/SeatClass"
+          },
+          "available_seats_count": {
+            "title": "Available Seats Count",
+            "minimum": 0.0,
+            "type": "integer"
+          },
+          "train_id": {
+            "title": "Train Id",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        }
+      },
+      "TrainClassUpdate": {
+        "title": "TrainClassUpdate",
+        "type": "object",
+        "properties": {
+          "seat_class": {
+            "$ref": "#/components/schemas/SeatClass"
+          },
+          "available_seats_count": {
+            "title": "Available Seats Count",
+            "type": "integer"
+          }
+        }
+      },
+      "TrainRead": {
+        "title": "TrainRead",
+        "required": [
+          "departure_station",
+          "arrival_station",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "departure_station": {
+            "title": "Departure Station",
+            "type": "string"
+          },
+          "arrival_station": {
+            "title": "Arrival Station",
+            "type": "string"
+          },
+          "departure_date": {
+            "title": "Departure Date",
+            "type": "string",
+            "format": "date"
+          },
+          "departure_time": {
+            "title": "Departure Time",
+            "type": "string",
+            "format": "time"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        }
+      },
+      "TrainUpdate": {
+        "title": "TrainUpdate",
+        "type": "object",
+        "properties": {
+          "departure_station": {
+            "title": "Departure Station",
+            "type": "string"
+          },
+          "arrival_station": {
+            "title": "Arrival Station",
+            "type": "string"
+          },
+          "departure_date": {
+            "title": "Departure Date",
+            "type": "string",
+            "format": "date"
+          },
+          "departure_time": {
+            "title": "Departure Time",
+            "type": "string",
+            "format": "time"
+          }
+        }
+      },
+      "TrainWithClasses": {
+        "title": "TrainWithClasses",
+        "required": [
+          "departure_station",
+          "arrival_station",
+          "id",
+          "train_classes"
+        ],
+        "type": "object",
+        "properties": {
+          "departure_station": {
+            "title": "Departure Station",
+            "type": "string"
+          },
+          "arrival_station": {
+            "title": "Arrival Station",
+            "type": "string"
+          },
+          "departure_date": {
+            "title": "Departure Date",
+            "type": "string",
+            "format": "date"
+          },
+          "departure_time": {
+            "title": "Departure Time",
+            "type": "string",
+            "format": "time"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "train_classes": {
+            "title": "Train Classes",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrainClassRead"
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

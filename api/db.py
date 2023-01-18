@@ -1,7 +1,7 @@
 from contextlib import contextmanager
+from datetime import time, date
 from typing import Type
 
-from pydantic.schema import datetime
 from sqlmodel import Session as SQLModelSession, SQLModel, create_engine, select
 
 from models import Train, TrainClass, SeatClass
@@ -9,7 +9,8 @@ from models import Train, TrainClass, SeatClass
 train_1 = Train(
     departure_station="London",
     arrival_station="Paris",
-    departure_time=datetime(2021, 1, 1, 10, 0, 0),
+    departure_date=date(2023, 1, 1),
+    departure_time=time(10, 0),
     train_classes=[
         TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10),
         TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20),
@@ -19,7 +20,8 @@ train_1 = Train(
 train_2 = Train(
     departure_station="Paris",
     arrival_station="Nantes",
-    departure_time=datetime(2021, 1, 1, 10, 0, 0),
+    departure_date=date(2022, 1, 1),
+    departure_time=time(12, 0),
     train_classes=[
         TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10),
         TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20),

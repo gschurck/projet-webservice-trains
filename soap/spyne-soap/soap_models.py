@@ -21,6 +21,7 @@ class TrainClass(ComplexModel):
 class Train(ComplexModel):
     departure_station = Unicode
     arrival_station = Unicode
+    departure_date = Unicode
     departure_time = Unicode
     id = Integer
     classes = TrainClass.customize(max_occurs='unbounded')

@@ -1,40 +1,52 @@
 import os
+from datetime import datetime
 from typing import List
 
 import pynecone as pc
 from pydantic import parse_obj_as
 from zeep import helpers, Client
 
-from .client_models import Train, TrainClass
+from .client_models import Train
 
 WSDL_URL = os.getenv("WSDL_URL")
 
 
 class State(pc.State):
     """The app state."""
-    prompt = ""
     trains: List[Train] = []
     selected_train: dict = None
     is_round_trip = False
     departure_station = ""
     arrival_station = ""
-    departure_date = ""
-    classes: List[TrainClass] = []
+    departure_date: str = "2022-01-01"
+    departure_time: str = "12:00:00"
+    classes: List[str] = ['first', 'standard', 'business']
     selected_train_class = ""
+    first: bool = False
+    standard: bool = False
+    business: bool = False
 
     def search_trains(self):
         """Get the image from the prompt."""
         client = Client(WSDL_URL)
-        string_list = ['first', 'standard']
+        classes_filter_list = []
+        if self.first:
+            classes_filter_list.append('first')
+        if self.standard:
+            classes_filter_list.append('standard')
+        if self.business:
+            classes_filter_list.append('business')
         emptyArrayPlaceholder = client.get_type('ns0:stringArray')
         options = emptyArrayPlaceholder()
-        for el in string_list:
+        for el in classes_filter_list:
             options['string'].append(el)
         response = client.service.search_trains(
             self.departure_station,
             self.arrival_station,
             options,
-            "2022-01-01T12:00:00"
+            datetime.strptime(self.departure_date, "%Y-%m-%d").date(),
+            datetime.strptime(self.departure_time, "%H:%M:%S").time()
+            # "2022-01-01T12:00:00"
         )
         if not response:
             self.trains = []
@@ -42,11 +54,6 @@ class State(pc.State):
         print(type(response))
         print(type(response[0]))
         print(response)
-        # temp = []
-        # for train in helpers.serialize_object(response):
-        #     train = dict(train)
-        #     temp += Train(train['departure_station'], train['arrival_station'], train['departure_time'],
-        #                   train['id'], train['classes'])
         res = helpers.serialize_object(response)
         print(res)
         self.trains = parse_obj_as(List[Train], res)
@@ -64,24 +71,14 @@ def render_train(train: Train):
 
     return pc.vstack(
         pc.heading(train.departure_station + " - " + train.arrival_station, font_size="1.5em"),
+        pc.text(train.departure_date),
         pc.text(train.departure_time),
         pc.hstack(
-            pc.foreach(train.classes, lambda train_class: render_train_class(train_class))
-            # render_train_class(train_class)
+            pc.foreach(train.classes, lambda train_class: pc.vstack(
+                pc.button(train_class.seat_class)
+            ))
         ),
         pc.divider(),
-    )
-
-
-def render_train_classes(classes: List[dict]):
-    return pc.foreach([{"a": "b"}], lambda train_class: render_train_class(train_class))
-
-
-def render_train_class(train_class: TrainClass):
-    # State.train_class = train_class["seat_class"]
-    print(train_class)
-    return pc.vstack(
-        pc.button(train_class.seat_class)
     )
 
 
@@ -115,14 +112,15 @@ def index():
             pc.input(placeholder="Departure Station", on_change=State.set_departure_station),
             pc.input(placeholder="Arrival Station", on_change=State.set_arrival_station),
             pc.input(placeholder="Departure Date", on_change=State.set_departure_date),
-            pc.select(
-                ["first", "standard", "business"],
-                placeholder="Select an class",
-                on_change=State.set_selected_train_class,
-            ),
             pc.checkbox(
                 "Round trip",
                 on_change=State.set_is_round_trip,
+            ),
+            pc.text("Filter by classes"),
+            pc.hstack(
+                pc.checkbox("first", on_change=State.set_first),
+                pc.checkbox("standard", on_change=State.set_standard),
+                pc.checkbox("business", on_change=State.set_business),
             ),
             pc.button(
                 "Search",

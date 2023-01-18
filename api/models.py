@@ -1,8 +1,8 @@
+from datetime import date, time
 from enum import Enum
 from typing import Optional, List
 
-from pydantic.schema import datetime
-from sqlalchemy import DateTime, Column
+from sqlalchemy import Column, Date, Time
 from sqlmodel import Field, SQLModel, Relationship
 
 
@@ -18,7 +18,8 @@ class TrainStation(SQLModel, table=True):
 class TrainBase(SQLModel):
     departure_station: str
     arrival_station: str
-    departure_time: datetime = Field(default=None, sa_column=Column(DateTime))
+    departure_date: date = Field(default=None, sa_column=Column(Date))
+    departure_time: time = Field(default=None, sa_column=Column(Time))
 
 
 class Train(TrainBase, table=True):
@@ -35,7 +36,8 @@ class TrainRead(TrainBase):
 class TrainUpdate(SQLModel):
     departure_station: Optional[str] = None
     arrival_station: Optional[str] = None
-    departure_time: Optional[datetime] = None
+    departure_date: Optional[date] = None
+    departure_time: Optional[time] = None
 
 
 # TrainClassSeats

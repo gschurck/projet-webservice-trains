@@ -5,9 +5,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi_filter import FilterDepends, with_prefix
 from fastapi_filter.contrib.sqlalchemy import Filter
 from models import TrainRead, TrainWithClasses, TrainUpdate, FullTrainClassRead
-from sqlmodel import Session, select
-
 from routes.trains_subroutes import train_class_routes
+from sqlmodel import Session, select
 
 router = APIRouter(
     prefix="/trains", tags=["trains"],
@@ -22,17 +21,16 @@ class TrainClassFilter(Filter):
 
 
 class TrainFilter(Filter):
-    departure_station: Optional[str]
     departure_station__ilike: Optional[str]
-    departure_station__like: Optional[str]
+    arrival_station__ilike: Optional[str]
+    departure_date: Optional[str]
+    departure_time: Optional[str]
     search: Optional[str]
     train_class_seats: Optional[TrainClassFilter] = FilterDepends(with_prefix("train", TrainClassFilter))
 
-    # available_seats_count__gt: Optional[int]
-
     class Constants(Filter.Constants):
         model = Train
-        search_model_fields = ["departure_station"]
+        search_model_fields = ["departure_station", "arrival_station"]
 
 
 @router.get("", response_model=List[TrainRead])
@@ -51,7 +49,7 @@ async def get_train(train_id: int, db: Session = Depends(get_session)):
 
 
 @router.patch("/{train_id}", response_model=TrainRead)
-def update_hero(train_id: int, train: TrainUpdate):
+def update_train(train_id: int, train: TrainUpdate):
     with Session(engine) as session:
         db_train = session.get(Train, train_id)
         if not db_train:
