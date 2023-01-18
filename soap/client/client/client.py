@@ -73,12 +73,6 @@ class State(pc.State):
         self.trains = []
         return pc.redirect("/book-tickets")
 
-    def book_tickets(self):
-        client = Client(WSDL_URL)
-        response = client.service.book_tickets(1, 1)
-
-        print(response)
-
 
 def render_train(train: Train):
     return pc.vstack(
@@ -155,7 +149,6 @@ def index():
 
 
 def book_tickets():
-    # State.book_tickets()
     return book_tickets_view(State)
 
 
