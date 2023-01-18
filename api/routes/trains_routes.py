@@ -35,7 +35,6 @@ class TrainFilter(Filter):
 
 @router.get("", response_model=List[TrainRead])
 async def get_trains(train_filter: TrainFilter = FilterDepends(TrainFilter), db: Session = Depends(get_session)):
-    db.commit()
     query = select(Train).distinct(Train.id)
     query = train_filter.filter(query)
     return db.exec(query).all()
