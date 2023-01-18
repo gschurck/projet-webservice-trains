@@ -89,14 +89,18 @@ def render_train(train: Train):
         pc.hstack(
             pc.foreach(train.classes, lambda train_class: pc.vstack(
                 pc.cond(State.flexible,
-                        pc.button(train_class.seat_class + " (" + train_class.price_flexible + "€ x " +
-                                  State.quantity + ")",
-                                  on_click=lambda: State.select_train_seat_class(train, train_class)),
-                        pc.button(train_class.seat_class + " (" + train_class.price_not_flexible + "€ x " +
-                                  State.quantity + ")",
-                                  on_click=lambda: State.select_train_seat_class(train, train_class))
-                        )
-                ,
+                        pc.cond(train_class.available_seats_count > 0,
+                                pc.button(
+                                    train_class.seat_class + " (" + train_class.price_flexible + "€ x " +
+                                    State.quantity + ")",
+                                    on_click=lambda: State.select_train_seat_class(train, train_class))
+                                ),
+                        pc.cond(train_class.available_seats_count > 0,
+                                pc.button(train_class.seat_class + " (" + train_class.price_not_flexible + "€ x " +
+                                          State.quantity + ")",
+                                          on_click=lambda: State.select_train_seat_class(train, train_class))
+                                )
+                        ),
             ))
         ),
         pc.divider(),

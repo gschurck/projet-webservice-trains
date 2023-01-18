@@ -34,19 +34,19 @@
           {
             "required": false,
             "schema": {
-              "title": "Departure Date  Ilike",
+              "title": "Departure Date",
               "type": "string"
             },
-            "name": "departure_date__ilike",
+            "name": "departure_date",
             "in": "query"
           },
           {
             "required": false,
             "schema": {
-              "title": "Departure Time  Ilike",
+              "title": "Departure Time",
               "type": "string"
             },
-            "name": "departure_time__ilike",
+            "name": "departure_time",
             "in": "query"
           },
           {
@@ -65,6 +65,15 @@
               "type": "string"
             },
             "name": "train__seat_class__in",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Train  Available Seats Count  Gt",
+              "type": "integer"
+            },
+            "name": "train__available_seats_count__gt",
             "in": "query"
           }
         ],
@@ -141,8 +150,8 @@
         "tags": [
           "trains"
         ],
-        "summary": "Update Hero",
-        "operationId": "update_hero_trains__train_id__patch",
+        "summary": "Update Train",
+        "operationId": "update_train_trains__train_id__patch",
         "parameters": [
           {
             "required": true,
@@ -343,43 +352,6 @@
           }
         }
       }
-    },
-    "/hello/{name}": {
-      "get": {
-        "summary": "Say Hello",
-        "operationId": "say_hello_hello__name__get",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Name",
-              "type": "string"
-            },
-            "name": "name",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -389,6 +361,8 @@
         "required": [
           "seat_class",
           "available_seats_count",
+          "price_flexible",
+          "price_not_flexible",
           "id"
         ],
         "type": "object",
@@ -399,6 +373,14 @@
           "available_seats_count": {
             "title": "Available Seats Count",
             "type": "integer"
+          },
+          "price_flexible": {
+            "title": "Price Flexible",
+            "type": "number"
+          },
+          "price_not_flexible": {
+            "title": "Price Not Flexible",
+            "type": "number"
           },
           "train_id": {
             "title": "Train Id",
@@ -438,6 +420,8 @@
         "required": [
           "seat_class",
           "available_seats_count",
+          "price_flexible",
+          "price_not_flexible",
           "id"
         ],
         "type": "object",
@@ -449,6 +433,16 @@
             "title": "Available Seats Count",
             "minimum": 0.0,
             "type": "integer"
+          },
+          "price_flexible": {
+            "title": "Price Flexible",
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "price_not_flexible": {
+            "title": "Price Not Flexible",
+            "minimum": 0.0,
+            "type": "number"
           },
           "train_id": {
             "title": "Train Id",
