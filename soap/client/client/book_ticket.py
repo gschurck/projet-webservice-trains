@@ -21,19 +21,19 @@ def render_train(State, train: Train):
 def book_tickets_view(State):
     return pc.center(
         pc.vstack(
-            pc.heading("Book ticket", font_size="1.5em"),
-            pc.text("Selected train: " + State.selected_train_seat_class.seat_class),
-            pc.button(
-                "Back",
-                on_click=[State.set_selected_train],
-                width="100%",
-            ),
-            pc.divider(),
-            pc.foreach(State.trains, lambda item: render_train(State, item)),
-            bg="white",
-            padding="2em",
-            shadow="lg",
-            border_radius="lg",
+            pc.heading("Thank you, your ticket has been booked", font_size="1.5em"),
+            # pc.text("Selected train: " + State.selected_train_seat_class['seat_class']),
+            # pc.button(
+            #     "Back",
+            #     on_click=[State.set_selected_train],
+            #     width="100%",
+            # ),
+            # pc.divider(),
+            # pc.foreach(State.trains, lambda item: render_train(State, item)),
+            # bg="white",
+            # padding="2em",
+            # shadow="lg",
+            # border_radius="lg",
         ),
         width="100%",
         height="100vh",

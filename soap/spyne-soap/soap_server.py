@@ -6,24 +6,14 @@ import requests
 
 logging.basicConfig(level=logging.INFO)
 from spyne import Application, rpc, ServiceBase, \
-    Integer, Unicode, DateTime, Date, Time
+    Integer, Unicode, Date, Time
 from spyne import Iterable
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
-from soap_models import CustomModel, Train
+from soap_models import Train
 
 API_URL = os.getenv("API_URL")
-
-
-class HelloWorldService(ServiceBase):
-    @rpc(Unicode, Integer, DateTime, _returns=Iterable(CustomModel))
-    def say_hello(ctx, name, times, date):
-        ret = []
-        for i in range(times):
-            # yield 'Hello, %s' % name
-            ret.append(CustomModel(name='Hello, %s' % name))
-        return ret
 
 
 class SearchTrainsService(ServiceBase):
@@ -39,8 +29,8 @@ class SearchTrainsService(ServiceBase):
         res = requests.get(API_URL + '/trains', params={
             'departure_station__ilike': departure_station if departure_station else None,
             'arrival_station__ilike': arrival_station if arrival_station else None,
-            'departure_date__ilike': date if date else None,
-            'departure_time__ilike': time if time else None,
+            'departure_date': date if date else None,
+            'departure_time': time if time else None,
             'train__seat_class__in': seat_classes if seat_classes else None,
         })
         logging.info(type(res))
@@ -54,7 +44,18 @@ class SearchTrainsService(ServiceBase):
         return trains
 
 
-application = Application([HelloWorldService, SearchTrainsService],
+class BookTicketsService(ServiceBase):
+    @rpc(Integer, Integer, _returns=Unicode)
+    def book_tickets(ctx, train_seat_class_id, patched_count):
+        print(patched_count)
+        res = requests.patch(API_URL + '/trains/class/' + str(train_seat_class_id), json={
+            'available_seats_count': patched_count,
+        })
+        print(res.text)
+        return res.text
+
+
+application = Application([SearchTrainsService, BookTicketsService],
                           tns='soap.trains',
                           in_protocol=Soap11(validator='lxml'),
                           out_protocol=Soap11()

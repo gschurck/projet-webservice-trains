@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from datetime import time, date
+from datetime import date, time
 from typing import Type
 
 from sqlmodel import Session as SQLModelSession, SQLModel, create_engine, select
