@@ -17,8 +17,8 @@ API_URL = os.getenv("API_URL")
 
 
 class SearchTrainsService(ServiceBase):
-    @rpc(Unicode, Unicode, Iterable(Unicode), Date, Time, _returns=Iterable(Train))
-    def search_trains(ctx, departure_station, arrival_station, seat_classes, date, time):
+    @rpc(Unicode, Unicode, Iterable(Unicode), Date, Time, Integer, _returns=Iterable(Train))
+    def search_trains(ctx, departure_station, arrival_station, seat_classes, date, time, quantity):
         # convert generator to list
         seat_classes = list(seat_classes)
         logging.info(str(seat_classes))
@@ -32,6 +32,7 @@ class SearchTrainsService(ServiceBase):
             'departure_date': date if date else None,
             'departure_time': time if time else None,
             'train__seat_class__in': seat_classes if seat_classes else None,
+            'available_seats_count__gt': quantity if quantity else 1,
         })
         logging.info(type(res))
         logging.info(json.dumps(res.json(), indent=4))

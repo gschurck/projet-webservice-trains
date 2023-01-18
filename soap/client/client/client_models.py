@@ -7,6 +7,8 @@ class TrainClass(pc.Base):
     id: int
     seat_class: str
     available_seats_count: int
+    price_flexible: float
+    price_not_flexible: float
 
 
 class Train(pc.Base):

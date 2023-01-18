@@ -27,6 +27,7 @@ class State(pc.State):
     standard: bool = False
     business: bool = False
     quantity: int = 1
+    flexible = False
 
     def search_trains(self):
         """Get the image from the prompt."""
@@ -48,10 +49,12 @@ class State(pc.State):
             options,
             datetime.strptime(self.departure_date, "%Y-%m-%d").date() if self.departure_date else None,
             datetime.strptime(self.departure_time, "%H:%M:%S").time() if self.departure_time else None,
+            self.quantity
         )
         if not response:
             self.trains = []
             return
+
         print(type(response))
         print(type(response[0]))
         print(response)
@@ -85,8 +88,15 @@ def render_train(train: Train):
         pc.text(train.departure_time),
         pc.hstack(
             pc.foreach(train.classes, lambda train_class: pc.vstack(
-                pc.button(train_class.seat_class,
-                          on_click=lambda: State.select_train_seat_class(train, train_class)),
+                pc.cond(State.flexible,
+                        pc.button(train_class.seat_class + " (" + train_class.price_flexible + "€ x " +
+                                  State.quantity + ")",
+                                  on_click=lambda: State.select_train_seat_class(train, train_class)),
+                        pc.button(train_class.seat_class + " (" + train_class.price_not_flexible + "€ x " +
+                                  State.quantity + ")",
+                                  on_click=lambda: State.select_train_seat_class(train, train_class))
+                        )
+                ,
             ))
         ),
         pc.divider(),
@@ -121,12 +131,15 @@ def index():
                 pc.checkbox("standard", on_change=State.set_standard),
                 pc.checkbox("business", on_change=State.set_business),
             ),
+            pc.checkbox("Flexible ticket", on_change=State.set_flexible),
             pc.button(
                 "Search",
                 on_click=[State.search_trains],
                 width="100%",
             ),
+
             pc.foreach(State.trains, lambda train: render_train(train)),
+
             bg="white",
             padding="2em",
             shadow="lg",

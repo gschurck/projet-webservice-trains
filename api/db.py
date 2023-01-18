@@ -12,10 +12,13 @@ train_1 = Train(
     departure_date=date(2023, 1, 1),
     departure_time=time(10, 0),
     train_classes=[
-        TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10),
-        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20),
-        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30),
-    ]
+        TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10, price_flexible=50.0,
+                   price_not_flexible=40.0),
+        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20, price_flexible=100.0,
+                   price_not_flexible=80.0),
+        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30, price_flexible=70.0,
+                   price_not_flexible=50.0, ),
+    ],
 )
 train_2 = Train(
     departure_station="Paris",
@@ -23,10 +26,13 @@ train_2 = Train(
     departure_date=date(2022, 1, 1),
     departure_time=time(12, 0),
     train_classes=[
-        TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10),
-        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20),
-        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30),
-    ]
+        TrainClass(seat_class=SeatClass.FIRST, available_seats_count=10, price_flexible=50.0,
+                   price_not_flexible=40.0),
+        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=20, price_flexible=100.0,
+                   price_not_flexible=80.0),
+        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=30, price_flexible=70.0,
+                   price_not_flexible=50.0, ),
+    ],
 )
 
 

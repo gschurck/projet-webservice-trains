@@ -15,6 +15,7 @@ router = APIRouter(
 
 class TrainClassFilter(Filter):
     seat_class__in: Optional[List[str]]
+    available_seats_count__gt: Optional[int]
 
     class Constants(Filter.Constants):
         model = TrainClass

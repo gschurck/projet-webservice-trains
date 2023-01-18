@@ -1,4 +1,4 @@
-from spyne import ComplexModel, Unicode, Integer
+from spyne import ComplexModel, Unicode, Integer, Float
 from spyne import Enum
 
 
@@ -16,6 +16,8 @@ class TrainClass(ComplexModel):
     id = Integer
     seat_class = SeatClass
     available_seats_count = Integer
+    price_flexible = Float
+    price_not_flexible = Float
 
 
 class Train(ComplexModel):

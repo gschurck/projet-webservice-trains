@@ -52,6 +52,8 @@ class SeatClass(str, Enum):
 class TrainClassBase(SQLModel):
     seat_class: SeatClass
     available_seats_count: int = Field(ge=0)
+    price_flexible: float = Field(ge=0)
+    price_not_flexible: float = Field(ge=0)
     train_id: int = Field(default=None, foreign_key="train.id")
 
 
@@ -72,6 +74,8 @@ class FullTrainClassRead(TrainClassBase):
     id: int
     seat_class: SeatClass
     available_seats_count: int
+    price_flexible: float
+    price_not_flexible: float
 
 
 class TrainClassUpdate(SQLModel):
