@@ -67,7 +67,7 @@ class State(pc.State):
         self.selected_train = selected_train
         self.selected_train_seat_class = selected_train_seat_class
         client = Client(WSDL_URL)
-        response = client.service.book_tickets(1,
+        response = client.service.book_tickets(selected_train_seat_class['id'],
                                                selected_train_seat_class['available_seats_count'] - int(self.quantity))
         print(response)
         self.trains = []
