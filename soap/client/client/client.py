@@ -30,7 +30,6 @@ class State(pc.State):
     flexible = False
 
     def search_trains(self):
-        """Get the image from the prompt."""
         client = Client(WSDL_URL)
         classes_filter_list = []
         if self.first:
