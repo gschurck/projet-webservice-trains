@@ -42,10 +42,6 @@ train_2 = Train(
     train_classes=[
         TrainClass(seat_class=SeatClass.FIRST, available_seats_count=2, price_flexible=40.0,
                    price_not_flexible=30.0),
-        TrainClass(seat_class=SeatClass.BUSINESS, available_seats_count=2, price_flexible=80.0,
-                   price_not_flexible=60.0),
-        TrainClass(seat_class=SeatClass.STANDARD, available_seats_count=2, price_flexible=60.0,
-                   price_not_flexible=40.0, ),
     ],
 )
 train_3 = Train(
