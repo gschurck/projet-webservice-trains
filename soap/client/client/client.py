@@ -7,7 +7,7 @@ from pydantic import parse_obj_as
 from zeep import helpers, Client
 
 from .book_ticket import book_tickets_view
-from .client_models import Train, TrainClass
+from .client_models import Train
 
 WSDL_URL = os.getenv("WSDL_URL")
 
@@ -18,11 +18,11 @@ class State(pc.State):
     is_round_trip = False
     departure_station = ""
     arrival_station = ""
-    departure_date: str = "2022-01-01"
-    departure_time: str = "12:00:00"
+    departure_date: str = ""
+    departure_time: str = ""
     classes: List[str] = ['first', 'standard', 'business']
-    selected_train: Train = None
-    selected_train_seat_class: TrainClass = None
+    selected_train: dict = None
+    selected_train_seat_class: dict = None
     first: bool = False
     standard: bool = False
     business: bool = False
@@ -45,8 +45,8 @@ class State(pc.State):
             self.departure_station,
             self.arrival_station,
             options,
-            datetime.strptime(self.departure_date, "%Y-%m-%d").date(),
-            datetime.strptime(self.departure_time, "%H:%M:%S").time()
+            datetime.strptime(self.departure_date, "%Y-%m-%d").date() if self.departure_date else None,
+            datetime.strptime(self.departure_time, "%H:%M:%S").time() if self.departure_time else None,
             # "2022-01-01T12:00:00"
         )
         if not response:
@@ -60,11 +60,22 @@ class State(pc.State):
         self.trains = parse_obj_as(List[Train], res)
         print(self.trains)
 
-    def select_train_seat_class(self, selected_train: Train, selected_train_seat_class: TrainClass):
-        print("selected: " + str(selected_train) + " " + str(selected_train_seat_class))
+    def select_train_seat_class(self, selected_train: dict, selected_train_seat_class: dict):
+        print("selected: " + str(selected_train['id']) + " " + str(selected_train_seat_class['id']))
+        quantity = 1
         self.selected_train = selected_train
         self.selected_train_seat_class = selected_train_seat_class
+        client = Client(WSDL_URL)
+        response = client.service.book_tickets(1, selected_train_seat_class['available_seats_count'] - quantity)
+        print(response)
+        self.trains = []
         return pc.redirect("/book-tickets")
+
+    def book_tickets(self):
+        client = Client(WSDL_URL)
+        response = client.service.book_tickets(1, 1)
+
+        print(response)
 
 
 def render_train(train: Train):
@@ -140,6 +151,7 @@ def index():
 
 
 def book_tickets():
+    # State.book_tickets()
     return book_tickets_view(State)
 
 

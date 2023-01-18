@@ -4,7 +4,7 @@ from db import Train, TrainClass, get_session, engine
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi_filter import FilterDepends, with_prefix
 from fastapi_filter.contrib.sqlalchemy import Filter
-from models import TrainRead, TrainWithClasses, TrainUpdate, FullTrainClassRead
+from models import TrainRead, TrainWithClasses, TrainUpdate, FullTrainClassRead, Ticket
 from routes.trains_subroutes import train_class_routes
 from sqlmodel import Session, select
 
@@ -35,6 +35,8 @@ class TrainFilter(Filter):
 
 @router.get("", response_model=List[TrainRead])
 async def get_trains(train_filter: TrainFilter = FilterDepends(TrainFilter), db: Session = Depends(get_session)):
+    db.add(Ticket(train_class_id=1))
+    db.commit()
     query = select(Train).distinct(Train.id)
     query = train_filter.filter(query)
     return db.exec(query).all()
