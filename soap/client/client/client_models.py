@@ -1,14 +1,15 @@
 from typing import List
 
-from pydantic import BaseModel
+import pynecone as pc
 
 
-class TrainClass(BaseModel):
+class TrainClass(pc.Base):
+    id: int
     seat_class: str
     available_seats_count: int
 
 
-class Train(BaseModel):
+class Train(pc.Base):
     id: int
     departure_station: str
     arrival_station: str

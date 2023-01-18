@@ -6,7 +6,8 @@ import pynecone as pc
 from pydantic import parse_obj_as
 from zeep import helpers, Client
 
-from .client_models import Train
+from .book_ticket import book_tickets_view
+from .client_models import Train, TrainClass
 
 WSDL_URL = os.getenv("WSDL_URL")
 
@@ -14,14 +15,14 @@ WSDL_URL = os.getenv("WSDL_URL")
 class State(pc.State):
     """The app state."""
     trains: List[Train] = []
-    selected_train: dict = None
     is_round_trip = False
     departure_station = ""
     arrival_station = ""
     departure_date: str = "2022-01-01"
     departure_time: str = "12:00:00"
     classes: List[str] = ['first', 'standard', 'business']
-    selected_train_class = ""
+    selected_train: Train = None
+    selected_train_seat_class: TrainClass = None
     first: bool = False
     standard: bool = False
     business: bool = False
@@ -59,23 +60,22 @@ class State(pc.State):
         self.trains = parse_obj_as(List[Train], res)
         print(self.trains)
 
-
-def select_train(train_id: int):
-    print(train_id)
+    def select_train_seat_class(self, selected_train: Train, selected_train_seat_class: TrainClass):
+        print("selected: " + str(selected_train) + " " + str(selected_train_seat_class))
+        self.selected_train = selected_train
+        self.selected_train_seat_class = selected_train_seat_class
+        return pc.redirect("/book-tickets")
 
 
 def render_train(train: Train):
-    """Render an item in the todo list."""
-    # res = requests.get()
-    # train.classes =
-
     return pc.vstack(
         pc.heading(train.departure_station + " - " + train.arrival_station, font_size="1.5em"),
         pc.text(train.departure_date),
         pc.text(train.departure_time),
         pc.hstack(
             pc.foreach(train.classes, lambda train_class: pc.vstack(
-                pc.button(train_class.seat_class)
+                pc.button(train_class.seat_class,
+                          on_click=lambda: State.select_train_seat_class(train, train_class)),
             ))
         ),
         pc.divider(),
@@ -139,7 +139,12 @@ def index():
     )
 
 
+def book_tickets():
+    return book_tickets_view(State)
+
+
 # Add state and page to the app.
 app = pc.App(state=State)
 app.add_page(index, title="Search trains")
+app.add_page(book_tickets, title="Book tickets", path="/book-tickets")
 app.compile()
